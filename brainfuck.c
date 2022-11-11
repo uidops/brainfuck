@@ -97,6 +97,11 @@ main(int argc, const char **argv)
 			puts(PROGRAM_VERSION);
 			exit(EXIT_SUCCESS);
 
+
+		} else if (*(*(argv+i)) == '-') {
+			fuckhelp(*argv);
+			exit(EXIT_FAILURE);
+
 		} else {
 			if (fname != NULL) {
 				fuckhelp(*argv);
