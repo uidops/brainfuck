@@ -151,8 +151,8 @@ void
 fuckhelp(const char *program_name)
 {
 	puts(PROGRAM_VERSION);
-	printf("usage: %s [-h] [script]\n", program_name);
-	puts("\n -h: HELP");
+	printf("usage: %s [-hv] [script]\n", program_name);
+	puts("\n -h: HELP\n -v: VERSION");
 
 	return;
 }
