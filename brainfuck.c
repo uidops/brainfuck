@@ -174,10 +174,12 @@ fucklen(const char *fuckcode)
 	while (*(fuckcode+n)) {
 		if (*(fuckcode+n) == '[')
 			flag++;
-		else if (flag && *(fuckcode+n) == ']')
-			flag--;
-		else if (!flag && *(fuckcode+n) == ']')
-			break;
+		else if (*(fuckcode+n) == ']') {
+			if (flag)
+				flag--;
+			else
+				break;
+		}
 
 		n++;
 	}
