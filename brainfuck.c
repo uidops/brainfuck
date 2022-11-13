@@ -39,6 +39,9 @@
 #include <unistd.h>
 
 #define PROGRAM_VERSION "Brainfuck Interpreter - v0.1"
+#define COMMENT '#'
+
+static unsigned pflag = 0;
 
 #define FUCK_CASES switch (*(fuckcode+i)) { \
 				case '>': \
@@ -54,6 +57,7 @@
 					(**memory)--; \
 					break; \
 				case '.': \
+					pflag |= 1; \
 					fputs(*memory, stdout); \
 					break; \
 				case ',': \
@@ -61,6 +65,9 @@
 					break; \
 				case '[': \
 					i += fuckloop(fuckcode+i, memory); \
+					break; \
+				case COMMENT: \
+					i += strchr(fuckcode+i, 0x0a) - fuckcode; \
 					break; \
 				default: \
 					continue; \
@@ -71,7 +78,7 @@ void		 fuckhelp(const char *);
 unsigned	 fucklinter(char *, size_t);
 size_t		 fucklen(const char *);
 size_t		 fuckloop(const char *, char **);
-void		 fuckinter(char **, const char *, size_t);
+void		 fuckinter(const char *, char **, size_t);
 
 
 int
@@ -134,8 +141,9 @@ main(int argc, const char **argv)
 
 	_memory = *memory;
 
-	fuckinter(memory, fp, length);
-	putchar(0x0a);
+	fuckinter(fp, memory, length);
+	if (pflag)
+		putchar(0x0a);
 
 	if (munmap(fp, length) == -1)
 		err(EXIT_FAILURE, "munmap");
@@ -193,7 +201,7 @@ fuckloop(const char *fuckcode, char **memory)
 
 
 void
-fuckinter(char **memory, const char *fuckcode, size_t length)
+fuckinter(const char *fuckcode, char **memory, size_t length)
 {
 	for (size_t i = 0; i < length; i++)
 			FUCK_CASES
@@ -210,6 +218,9 @@ fucklinter(char *fuckcode, size_t length)
 
 	for (size_t i = 0; i < length; i++) {
 		switch (*(fuckcode+i)) {
+			case COMMENT :
+				i += strchr(fuckcode+i, 0x0a) - fuckcode;
+				break;
 			case '[' :
 				l++;
 				break;
